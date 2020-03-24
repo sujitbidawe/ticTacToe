@@ -49,9 +49,10 @@ function main(){
 	if [[ $choice = "y" || $choice = "Y" ]]
 	then
 		resetBoard
-		displayBoard
 		letterAssign
 		toss
+		displayBoard
+
 	else
 		echo "Bye!"
 	fi
