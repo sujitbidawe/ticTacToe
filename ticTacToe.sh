@@ -1,5 +1,7 @@
 #!/usr/local/bin/bash
 
+clear 
+
 declare -a board
 board=(0 1 2 3 4 5 6 7 8)
 
@@ -21,14 +23,34 @@ do
 done
 }
 
+function letterAssign(){
+
+	if [[ $((RANDOM%2)) -eq 0 ]]
+	then	
+		currentPlayer="user"
+		user="X"
+		computer="O"
+	else
+		currentPlayer="computer"
+		computer="X"
+		user="O"
+	fi
+
+	echo "user will play with $user and computer will play with $computer"
+
+}
+
 function main(){
+
 	read -p "Do you want to start the game? enter 'y' for yes or anything else for no: " choice
-	resetBoard
+	
 	if [[ $choice = "y" || $choice = "Y" ]]
 	then
+		resetBoard
 		displayBoard
 	fi
 
+	letterAssign
 }
 
 main
