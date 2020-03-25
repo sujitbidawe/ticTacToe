@@ -117,6 +117,7 @@ function computerPlay(){
 
 
 function main(){
+	echo "lets play with a smart computer"
 	read -p "Do you want to start a game? enter 'y' for yes or anything else for no: " choice
 	
 	if [[ $choice = "y" || $choice = "Y" ]]
