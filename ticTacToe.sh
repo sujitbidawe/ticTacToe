@@ -75,25 +75,6 @@ function winBlockCondition(){
 	fi
 }
 
-function computerColumnWin(){
-	local symbol=$1
-	for((column=0;column<7;column=column+1))
-	do
-		if [[ ${board[$column]} == $symbol && ${board[$column+3]} == $symbol && ${board[$column+6]} == $((column+6)) ]]
-		then
-			board[$column+6]=$computer
-			checkConditions
-		elif [[ ${board[$column]} == $symbol && ${board[$column+6]} == $symbol && ${board[$column+3]} == $((column+3)) ]]
-		then
-			board[$column+3]=$computer
-			checkConditions
-		elif [[ ${board[$column+3]} == $symbol && ${board[$column+6]} == $symbol && ${board[$column]} == $column ]]
-		then
-			board[$column]=$computer
-			checkConditions
-		fi
-	done
-}
 
 function computerRowWin(){
 	local symbol=$1
@@ -101,17 +82,43 @@ function computerRowWin(){
 	do
    		if [[ ${board[$row]} == $symbol && ${board[$row+1]} == $symbol && ${board[$row+2]} == $((row+2)) ]]
    		then
-			board[$row+2]=$computer
-			checkConditions
+				board[$row+2]=$computer
+				noMove=1
+				checkConditions
    		elif [[ ${board[$row]} == $symbol && ${board[$row+2]} == $symbol && ${board[$row+1]} == $((row+1)) ]]
 			then
         		board[$row+1]=$computer
-			checkConditions
+        		noMove=1
+				checkConditions
    		elif [[ ${board[$row+1]} == $symbol && ${board[$row+2]} == $symbol && ${board[$row]} == $row ]]
    		then
         		board[$row]=$computer
+        		noMove=1
         		checkConditions
    		fi
+	done
+}
+
+function computerColumnWin(){
+	local symbol=$1
+	for((column=0;column<7;column=column+1))
+	do
+		if [[ ${board[$column]} == $symbol && ${board[$column+3]} == $symbol && ${board[$column+6]} == $((column+6)) ]]
+		then
+			board[$column+6]=$computer
+			noMove=1
+			checkConditions
+		elif [[ ${board[$column]} == $symbol && ${board[$column+6]} == $symbol && ${board[$column+3]} == $((column+3)) ]]
+		then
+			board[$column+3]=$computer
+			noMove=1
+			checkConditions
+		elif [[ ${board[$column+3]} == $symbol && ${board[$column+6]} == $symbol && ${board[$column]} == $column ]]
+		then
+			board[$column]=$computer
+			noMove=1
+			checkConditions
+		fi
 	done
 }
 
@@ -121,34 +128,40 @@ function computerDiagonalWin(){
 	if [[ ${board[$diagonal+2]} == $symbol && ${board[$diagonal+4]} == $symbol && ${board[$diagonal+6]} == $((diagonal+6)) ]]
 	then
      		board[$diagonal+6]=$computer
-		checkConditions
+     		noMove=1
+			checkConditions
    	elif [[ ${board[$diagonal+2]} == $symbol && ${board[$diagonal+6]} == $symbol && ${board[$diagonal+4]} == $((diagonal+4)) ]]
    	then
-		board[$diagonal+4]=$computer
-		checkConditions
+			board[$diagonal+4]=$computer
+			noMove=1
+			checkConditions
    	elif [[ ${board[$diagonal+4]} == $symbol && ${board[$diagonal+6]} == $symbol && ${board[$diagonal+2]} == $((diagonal+2)) ]]
    	then
-		board[$diagonal+2]=$computer
-		checkConditions
+			board[$diagonal+2]=$computer
+			noMove=1
+			checkConditions
    	elif [[ ${board[$diagonal]} == $symbol && ${board[$diagonal+4]} == $symbol && ${board[$diagonal+8]} == $((diagonal+8)) ]]
    	then
-		board[$diagonal+8]=$computer
-		checkConditions
+			board[$diagonal+8]=$computer
+			noMove=1
+			checkConditions
    	elif [[ ${board[$diagonal]} == $symbol && ${board[$diagonal+8]} == $symbol && ${board[$diagonal+4]} == $((diagonal+4)) ]]
    	then
-		board[$diagonal+4]=$computer
-		checkConditions
+			board[$diagonal+4]=$computer
+			noMove=1
+			checkConditions
    	elif [[ ${board[$diagonal+4]} == $symbol && ${board[$diagonal+8]} == $symbol && ${board[$diagonal]} == $diagonal ]]
    	then
-		board[$diagonal]=$computer
-		checkConditions
+			board[$diagonal]=$computer
+			noMove=1
+			checkConditions
    	fi
 }
 
 function checkConditions(){
 	displayBoard
 	flag=1
-	((count++))
+	((turnCount++))
 }
 
 function play(){
@@ -186,21 +199,24 @@ function userPlay(){
 function computerPlay(){
 	currentPlayer="computer"
 	flag=0
+	noMove=0
 	if [[ $turnCount -lt $MAX_TURNS ]]
 	then
-		winBlockCondition $computer 
-
-		position=$((RANDOM%9))
-		if [[ "${board[$position]}" = "$position" ]]
+		winBlockCondition $computer
+		winBlockCondition $user
+		if [[ $noMove -eq 0 ]]
 		then
-			echo "computer's play:"
-			board[$position]=$computer
-			((turnCount++))
-			displayBoard
-		else
-			computerPlay
+			position=$((RANDOM%9))
+			if [[ "${board[$position]}" = "$position" ]]
+			then
+				echo "computer's play:"
+				board[$position]=$computer
+				((turnCount++))
+				displayBoard
+			else
+				computerPlay
+			fi
 		fi
-		
 		
 
 		winChecker
@@ -214,7 +230,6 @@ function computerPlay(){
 
 
 function main(){
-	echo "lets play with a smart computer"
 	read -p "Do you want to start a game? enter 'y' for yes or anything else for no: " choice
 	
 	if [[ $choice = "y" || $choice = "Y" ]]
