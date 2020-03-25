@@ -187,6 +187,18 @@ function checkCenter(){
 	fi
 }
 
+function checkSides() {
+	for((i=0;i<8;i=i+2))
+	do
+		if [[ ${board[$i]} -eq $((i+1)) ]]
+		then
+			board[$i]=$computer
+			noMove=1
+			checkConditions
+		fi
+	done
+}
+
 
 function checkConditions(){
 	displayBoard
@@ -244,20 +256,10 @@ function computerPlay(){
 			checkCenter
 		fi
 
-		if [[ $noMove -eq 0 ]]
+		if [ $flag -eq 0 ]
 		then
-			position=$((RANDOM%9))
-			if [[ "${board[$position]}" = "$position" ]]
-			then
-				echo "computer's play:"
-				board[$position]=$computer
-				((turnCount++))
-				displayBoard
-			else
-				computerPlay
-			fi
-		fi
-		
+			checkSides
+		fi		
 
 		winChecker
 		userPlay
