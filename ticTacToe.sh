@@ -177,6 +177,16 @@ function checkCorner(){
 	done
 }
 
+function checkCenter(){
+	i=0
+	if [[ ${board[$i+4]} -eq $((i+5)) ]]
+	then
+		board[$i+4]=$computer
+		noMove=1
+		checkConditions
+	fi
+}
+
 
 function checkConditions(){
 	displayBoard
@@ -227,6 +237,11 @@ function computerPlay(){
 		if [[ flag -eq 0 ]]
 		then
 			checkCorner
+		fi
+
+		if [[ flag -eq 0 ]]
+		then
+			checkCenter
 		fi
 
 		if [[ $noMove -eq 0 ]]
