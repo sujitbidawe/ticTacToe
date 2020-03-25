@@ -158,6 +158,26 @@ function computerDiagonalWin(){
    	fi
 }
 
+function checkCorner(){
+	for((i=0;i<7;i=i+6))
+	do
+		if [[ ${board[$i]} == $i ]]
+		then
+			board[$i]=$computer
+			noMove=1
+			checkConditions
+			break
+		elif [[ ${board[$i+2]} == $((i+2)) ]]
+		then
+			board[$i+2]=$computer
+			noMove=1
+			checkConditions
+			break
+		fi
+	done
+}
+
+
 function checkConditions(){
 	displayBoard
 	flag=1
@@ -204,6 +224,11 @@ function computerPlay(){
 	then
 		winBlockCondition $computer
 		winBlockCondition $user
+		if [[ flag -eq 0 ]]
+		then
+			checkCorner
+		fi
+
 		if [[ $noMove -eq 0 ]]
 		then
 			position=$((RANDOM%9))
